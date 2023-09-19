@@ -1,0 +1,57 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+//tabela User e Profile tem relação 1:1 (cada user pode ter um profile)
+model User {
+  id Int @id @default(autoincrement())
+  email String?
+  password String
+  profile Profile?
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id])
+  adress Address[]
+  services ProfileService[]
+}
+//tabela Address tem relação 1:N com o profile (cada profile pode ter varios endereços)
+model Address {
+  id Int @id @default(autoincrement())
+  street String
+  number Int
+  zipCode String?
+  profileId Int
+  profile Profile @relation(fields: [profileId], references: [id])
+}
+
+model Service {
+  id Int @id @default(autoincrement())
+  description String
+  profiles ProfileService[]
+}
+
+//tabela Service e Profile tem relação N:N (cada perfil pode ter varios serviços, e podem ter varios serviços em cada perfil)
+model ProfileService {
+  servicecode String?
+  profileId Int
+  profile Profile @relation(fields: [profileId], references: [id])
+  serviceId Int
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@id([profileId, serviceId])
+}
+
+
+
+
+
