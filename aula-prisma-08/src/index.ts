@@ -1,19 +1,34 @@
-import express, { Request, Response } from "express";
 import prisma from "./database";
 
-const app = express();
+(async () => {
 
-app.get("/customers", async (req: Request, res: Response) => {
-  try {
-    const customers = await prisma.customer.findMany();
-    res.send(customers);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-})
+  const students1 = await prisma.student.groupBy({
+    by: ['class'],
+    _count: {
+      class: true
+    },
+    orderBy: { 
+      _count: { 
+        class: 'asc' 
+      } 
+    }
+  }) 
+  console.log('count de estudantes por classe:', students1);
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server is up and running on port ${port}`);
-});
+  const students2 =  await prisma.student.groupBy({
+    where: {
+      jobId: null
+    },
+    by: ['class'],
+    _count: {
+      class: true
+    },
+    orderBy: { 
+      _count: { 
+        class: 'asc' 
+      } 
+    }
+  }) 
+  console.log('count de estudantes por classe que não tem emprego:', students2);
+  
+})()

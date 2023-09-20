@@ -1,22 +1,21 @@
 {
-  "name": "enunciado__cliente-favorito",
+  "name": "enunciado__migracao_problematica",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "dev": "nodemon src/index.ts",
-    "seed": "prisma db seed",
-    "migrate:dev": "prisma migrate dev"
+    "start": "npm run migrate:deploy && node dist/index.js",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^20.1.4",
+    "@types/node": "^20.1.6",
     "nodemon": "^2.0.22",
     "prisma": "^4.14.0",
     "ts-node": "^10.9.1",

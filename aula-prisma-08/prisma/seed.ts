@@ -1,29 +1,67 @@
 import prisma from "../src/database";
+import { faker } from '@faker-js/faker';
 
-async function checkOrCreateDefaultUser() {
-  return await prisma.customer.upsert({
-    create: {
-      firstName: "Geraldo",
-      lastName: "Luiz Datena",
-      document: "133.245.497-60"
-    },
-    update: {},
-    where: {
-      document: "133.245.497-60"
+const NUM_JOBS = 10;
+const NUM_STUDENTS = 10_000;
+
+async function main() {
+
+  for (let i = 0; i < NUM_JOBS; i++) {
+    await createJob();
+  }
+
+  for (let i = 0; i < NUM_STUDENTS; i++) {
+    if (faker.datatype.boolean()) {
+      await createStudentWithJob();
+    } else {
+      await createStudentWithoutJob();
+    }
+  }
+}
+
+main().then(() => {
+  prisma.$disconnect();
+}).catch(e => {
+  console.log(e);
+  prisma.$disconnect();
+  process.exit(1);
+})
+
+function createStudentWithJob() {
+  return prisma.student.create({
+    data: {
+      name: faker.person.fullName(),
+      class: `T` + faker.number.int({
+        min: 1,
+        max: 10
+      }),
+      jobId: faker.number.int({
+        min: 1, max: NUM_JOBS
+      })
     }
   })
-};
+}
 
-function main(){
-  return checkOrCreateDefaultUser();
-};
+function createStudentWithoutJob() {
+  return prisma.student.create({
+    data: {
+      name: faker.person.fullName(),
+      class: `T` + faker.number.int({
+        min: 1,
+        max: 10
+      }),
+    }
+  })
+}
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
+function createJob() {
+  return prisma.job.create({
+    data: {
+      title: faker.person.jobTitle(),
+      salary: faker.number.int({
+        min: 1000,
+        max: 10000
+      })
+    }
   })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  })
+}

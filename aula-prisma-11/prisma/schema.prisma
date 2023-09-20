@@ -10,21 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Student {
+model User {
   id    Int    @id @default(autoincrement())
   name  String
-  class String
-  job   Job?   @relation(fields: [jobId], references: [id])
-  jobId Int?
+  email String
 
-  @@map("students")
-}
-
-model Job {
-  id      Int       @id @default(autoincrement())
-  title   String
-  salary  Int
-  Student Student[]
-
-  @@map("jobs")
+  @@map("users")
 }

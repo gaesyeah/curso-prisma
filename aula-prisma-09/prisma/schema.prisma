@@ -10,21 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Person {
-  id       Int    @id @default(autoincrement())
-  name     String
-  document String @unique
-  pets     Pet[]
+model Customer {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  document  String @unique
 
-  @@map("people")
-}
-
-model Pet {
-  id       Int     @id @default(autoincrement())
-  name     String
-  type     String
-  Person   Person? @relation(fields: [personId], references: [id])
-  personId Int?
-
-  @@map("pet")
+  @@map("customers")
 }
